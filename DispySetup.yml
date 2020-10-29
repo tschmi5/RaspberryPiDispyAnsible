@@ -1,0 +1,50 @@
+---
+
+- name: Setup the Pi's
+  hosts: all
+  vars:
+    packages_to_install: [ git, python3, python3-pip, vim]
+  become: yes
+
+  tasks:
+    - name: Update Pi's
+      apt: upgrade=dist force_apt_get=yes
+
+    - name: Install Packages
+      apt: pkg={{ item }} state=present update_cache=yes
+      with_items:
+        - vim
+        - git
+        - python3
+        - python3-pip
+    - name: Pip Installs
+      pip:
+        name: '{{ item }}'
+        executable: pip3
+      with_items:
+        - dispy
+        - numpy
+        - psutil
+        - --upgrade pip
+    - name: Disable Bluetooth
+      lineinfile:
+        path: /boot/config.txt
+        line: 'dtoverlay=disable-bt'
+    - name: Add Dispy Start Up script
+      copy:
+        dest: "/root/start_dispy.sh"
+        content: |
+          #!/bin/sh
+          sleep 30
+          _IP=$(hostname -I | awk '{print $1}')
+          /usr/local/bin/dispynode.py -i $_IP --daemon
+        mode: a+x
+    - name: Add dispy to start at boot
+      cron:
+        name: "Start Dispy"
+        special_time: reboot
+        job: "bash /root/start_dispy.sh &"
+    - name: Wait for Server to restart
+      shell: "reboot"
+    
+    
