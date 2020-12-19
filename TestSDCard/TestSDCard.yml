@@ -1,9 +1,0 @@
----
-
-- name: Setup the Pi's
-  hosts: all
-  become: yes
-
-  tasks:
-    - name: Test Speed
-      shell: "dd if=/dev/zero of=/tmp/test1.img bs=1G count=10 oflag=dsync"
