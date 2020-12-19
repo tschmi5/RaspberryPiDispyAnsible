@@ -8,8 +8,8 @@
   become: yes
 
   tasks:
-    # - name: Update Pi's
-    #   apt: upgrade=dist force_apt_get=yes
+    - name: Update Pi's
+      apt: upgrade=dist force_apt_get=yes
 
     - name: Install Packages
       apt: pkg={{ packages_to_install }} state=present update_cache=yes
