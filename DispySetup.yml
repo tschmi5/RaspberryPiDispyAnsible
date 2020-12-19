@@ -8,34 +8,34 @@
   become: yes
 
   tasks:
-    # - name: Update Pi's
-    #   apt: upgrade=dist force_apt_get=yes
+    - name: Update Pi's
+      apt: upgrade=dist force_apt_get=yes
 
-    # - name: Install Packages
-    #   apt: pkg={{ packages_to_install }} state=present update_cache=yes
+    - name: Install Packages
+      apt: pkg={{ packages_to_install }} state=present update_cache=yes
 
-    # - name: Pip Installs
-    #   pip:
-    #     name: '{{ pip_packages }}'
-    #     executable: pip3
-    # - name: Disable Bluetooth
-    #   lineinfile:
-    #     path: /boot/config.txt
-    #     line: 'dtoverlay=disable-bt'
-    # - name: Add Dispy Start Up script
-    #   copy:
-    #     dest: "/root/start_dispy.sh"
-    #     content: |
-    #       #!/bin/sh
-    #       sleep 30
-    #       _IP=$(hostname -I | awk '{print $1}')
-    #       /usr/local/bin/dispynode.py -i $_IP --daemon
-    #     mode: a+x
-    # - name: Add dispy to start at boot
-    #   cron:
-    #     name: "Start Dispy"
-    #     special_time: reboot
-    #     job: "bash /root/start_dispy.sh &"
+    - name: Pip Installs
+      pip:
+        name: '{{ pip_packages }}'
+        executable: pip3
+    - name: Disable Bluetooth
+      lineinfile:
+        path: /boot/config.txt
+        line: 'dtoverlay=disable-bt'
+    - name: Add Dispy Start Up script
+      copy:
+        dest: "/root/start_dispy.sh"
+        content: |
+          #!/bin/sh
+          sleep 30
+          _IP=$(hostname -I | awk '{print $1}')
+          /usr/local/bin/dispynode.py -i $_IP --daemon
+        mode: a+x
+    - name: Add dispy to start at boot
+      cron:
+        name: "Start Dispy"
+        special_time: reboot
+        job: "bash /root/start_dispy.sh &"
     - name: Wait for Server to restart
       reboot:
     
