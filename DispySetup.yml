@@ -3,29 +3,21 @@
 - name: Setup the Pi's
   hosts: all
   vars:
-    packages_to_install: [ git, python3, python3-pip, vim]
+    packages_to_install: [git, python3, python-setuptools, python3-dev, python3-pip, vim, nmap, hping3]
+    pip_packages: [dispy, numpy, psutil]
   become: yes
 
   tasks:
-    - name: Update Pi's
-      apt: upgrade=dist force_apt_get=yes
+    # - name: Update Pi's
+    #   apt: upgrade=dist force_apt_get=yes
 
     - name: Install Packages
-      apt: pkg={{ item }} state=present update_cache=yes
-      with_items:
-        - vim
-        - git
-        - python3
-        - python3-pip
+      apt: pkg={{ packages_to_install }} state=present update_cache=yes
+
     - name: Pip Installs
       pip:
-        name: '{{ item }}'
+        name: '{{ pip_packages }}'
         executable: pip3
-      with_items:
-        - dispy
-        - numpy
-        - psutil
-        - --upgrade pip
     - name: Disable Bluetooth
       lineinfile:
         path: /boot/config.txt
